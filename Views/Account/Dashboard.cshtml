@@ -1,0 +1,208 @@
+@model IEnumerable<Instructor>
+@{
+    ViewData["Title"] = "Dashboard";
+    var instructorsList = Model?.ToList() ?? new List<Instructor>();
+    var iedInstructors = instructorsList
+        .Where(i => i.Department.Contains("IED") || i.Department.Contains("Institute of Education"))
+        .OrderBy(i => i.FullName)
+        .ToList();
+    var icsInstructors = instructorsList
+        .Where(i => i.Department.Contains("ICS") || i.Department.Contains("Institute of Computing Studies"))
+        .OrderBy(i => i.FullName)
+        .ToList();
+    var otherInstructors = instructorsList
+        .Where(i => !iedInstructors.Contains(i) && !icsInstructors.Contains(i))
+        .OrderBy(i => i.FullName)
+        .ToList();
+}
+
+<div class="page-heading">
+    <div>
+        <h1>Dashboard</h1>
+        <p class="muted-text">Welcome, @User.Identity?.Name. Manage and review instructors sorted by department.</p>
+    </div>
+    <div class="d-flex gap-2">
+        <a asp-controller="Instructor" asp-action="Create" class="btn btn-primary">+ Add instructor</a>
+    </div>
+</div>
+
+<!-- Department Overview Stat Cards -->
+<div class="row g-3 mb-4">
+    <div class="col-sm-6 col-xl-3">
+        <div class="stat-card">
+            <div class="stat-label">Total Instructors</div>
+            <div class="stat-number">@ViewBag.InstructorCount</div>
+            <a asp-controller="Instructor" asp-action="Index" class="small fw-semibold">View all instructors <span aria-hidden="true">&rarr;</span></a>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="stat-card stat-card-dept stat-card-ied">
+            <div class="d-flex justify-content-between align-items-start">
+                <div class="stat-label">Institute of Education</div>
+                <span class="badge badge-ied">IED</span>
+            </div>
+            <div class="stat-number">@ViewBag.IedCount</div>
+            <span class="muted-text small">Faculty members</span>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="stat-card stat-card-dept stat-card-ics">
+            <div class="d-flex justify-content-between align-items-start">
+                <div class="stat-label">Institute of Computing Studies</div>
+                <span class="badge badge-ics">ICS</span>
+            </div>
+            <div class="stat-number">@ViewBag.IcsCount</div>
+            <span class="muted-text small">Faculty members</span>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="stat-card stat-card-soft">
+            <div class="stat-label">Signed in as</div>
+            <div class="stat-account text-truncate">@ViewBag.AccountEmail</div>
+            <span class="muted-text small">Administrator Access</span>
+        </div>
+    </div>
+</div>
+
+<!-- Instructors Sorted by Department -->
+<div class="mb-4">
+    <div class="row g-4">
+        <!-- Institute of Education (IED) Column / Section -->
+        <div class="col-lg-6">
+            <div class="panel h-100 p-3 p-sm-4">
+                <div class="d-flex align-items-center justify-content-between pb-3 mb-3 border-bottom">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="dept-bullet dept-bullet-ied"></span>
+                        <h3 class="h6 mb-0 fw-bold">Institute of Education (IED)</h3>
+                    </div>
+                    <span class="badge badge-ied">@iedInstructors.Count records</span>
+                </div>
+
+                @if (!iedInstructors.Any())
+                {
+                    <div class="text-center py-4 text-muted">
+                        <div class="small">No instructors assigned to Institute of Education yet.</div>
+                        <a asp-controller="Instructor" asp-action="Create" class="btn btn-sm btn-outline-primary mt-2">+ Add to IED</a>
+                    </div>
+                }
+                else
+                {
+                    <div class="table-responsive">
+                        <table class="table table-sm align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Instructor</th>
+                                    <th>Gender</th>
+                                    <th>Email</th>
+                                    <th class="text-end">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var inst in iedInstructors)
+                                {
+                                    <tr>
+                                        <td>
+                                            <div class="fw-semibold text-dark">@inst.FullName</div>
+                                            <small class="text-muted">#@inst.InstructorId</small>
+                                        </td>
+                                        <td><small>@inst.Gender</small></td>
+                                        <td>
+                                            <small><a href="mailto:@inst.EmailAddress">@inst.EmailAddress</a></small>
+                                        </td>
+                                        <td class="text-end">
+                                            <div class="action-buttons justify-content-end">
+                                                <a asp-controller="Instructor" asp-action="Details" asp-route-id="@inst.InstructorId" class="btn btn-sm btn-outline-secondary">Details</a>
+                                                <a asp-controller="Instructor" asp-action="Edit" asp-route-id="@inst.InstructorId" class="btn btn-sm btn-outline-primary">Edit</a>
+                                                <a asp-controller="Instructor" asp-action="Delete" asp-route-id="@inst.InstructorId" class="btn btn-sm btn-outline-danger">Delete</a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Institute of Computing Studies (ICS) Column / Section -->
+        <div class="col-lg-6">
+            <div class="panel h-100 p-3 p-sm-4">
+                <div class="d-flex align-items-center justify-content-between pb-3 mb-3 border-bottom">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="dept-bullet dept-bullet-ics"></span>
+                        <h3 class="h6 mb-0 fw-bold">Institute of Computing Studies (ICS)</h3>
+                    </div>
+                    <span class="badge badge-ics">@icsInstructors.Count records</span>
+                </div>
+
+                @if (!icsInstructors.Any())
+                {
+                    <div class="text-center py-4 text-muted">
+                        <div class="small">No instructors assigned to Institute of Computing Studies yet.</div>
+                        <a asp-controller="Instructor" asp-action="Create" class="btn btn-sm btn-outline-primary mt-2">+ Add to ICS</a>
+                    </div>
+                }
+                else
+                {
+                    <div class="table-responsive">
+                        <table class="table table-sm align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Instructor</th>
+                                    <th>Gender</th>
+                                    <th>Email</th>
+                                    <th class="text-end">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var inst in icsInstructors)
+                                {
+                                    <tr>
+                                        <td>
+                                            <div class="fw-semibold text-dark">@inst.FullName</div>
+                                            <small class="text-muted">#@inst.InstructorId</small>
+                                        </td>
+                                        <td><small>@inst.Gender</small></td>
+                                        <td>
+                                            <small><a href="mailto:@inst.EmailAddress">@inst.EmailAddress</a></small>
+                                        </td>
+                                        <td class="text-end">
+                                            <div class="action-buttons justify-content-end">
+                                                <a asp-controller="Instructor" asp-action="Details" asp-route-id="@inst.InstructorId" class="btn btn-sm btn-outline-secondary">Details</a>
+                                                <a asp-controller="Instructor" asp-action="Edit" asp-route-id="@inst.InstructorId" class="btn btn-sm btn-outline-primary">Edit</a>
+                                                <a asp-controller="Instructor" asp-action="Delete" asp-route-id="@inst.InstructorId" class="btn btn-sm btn-outline-danger">Delete</a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<section class="panel">
+    <h2 class="h6 mb-2 fw-bold">Quick Actions</h2>
+    <p class="muted-text small mb-3">Choose an action to continue managing instructor information.</p>
+    <div class="quick-actions">
+        <a class="quick-action" asp-controller="Instructor" asp-action="Index">
+            <span class="quick-icon">▤</span>
+            <span>
+                <strong>View All Instructors</strong>
+                <small>Browse master list sorted by department</small>
+            </span>
+        </a>
+        <a class="quick-action" asp-controller="Instructor" asp-action="Create">
+            <span class="quick-icon">＋</span>
+            <span>
+                <strong>Add New Instructor</strong>
+                <small>Enroll instructor under IED or ICS</small>
+            </span>
+        </a>
+    </div>
+</section>

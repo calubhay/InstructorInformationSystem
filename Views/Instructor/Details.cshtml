@@ -1,0 +1,64 @@
+@model Instructor
+@{
+    ViewData["Title"] = "Instructor Details";
+}
+
+<div class="page-heading">
+    <div>
+        <h1>Instructor Details</h1>
+        <p class="muted-text">Complete information for instructor #@Model.InstructorId.</p>
+    </div>
+    <a asp-action="Index" class="btn btn-outline-secondary">Back to list</a>
+</div>
+
+<section class="panel detail-panel">
+    <div class="detail-header">
+        <div class="avatar-circle">
+            @(string.IsNullOrWhiteSpace(Model.FullName) ? "I" : Model.FullName.Trim().Substring(0, 1).ToUpperInvariant())
+        </div>
+        <div>
+            <h2 class="h4 mb-1">@Model.FullName</h2>
+            <div class="badge @(Model.Department.Contains("ICS") ? "badge-ics" : "badge-ied")">
+                @Model.Department
+            </div>
+        </div>
+    </div>
+    <dl class="detail-grid">
+        <div>
+            <dt>Instructor ID</dt>
+            <dd>#@Model.InstructorId</dd>
+        </div>
+        <div>
+            <dt>Department</dt>
+            <dd><strong>@Model.Department</strong></dd>
+        </div>
+        <div>
+            <dt>Age</dt>
+            <dd>@Model.Age</dd>
+        </div>
+        <div>
+            <dt>Bachelor's Degree</dt>
+            <dd>@Model.BachelorDegree</dd>
+        </div>
+        <div>
+            <dt>Majorship</dt>
+            <dd>@Model.Majorship</dd>
+        </div>
+        <div>
+            <dt>Gender</dt>
+            <dd>@Model.Gender</dd>
+        </div>
+        <div>
+            <dt>Address</dt>
+            <dd>@Model.Address</dd>
+        </div>
+        <div class="col-span-2">
+            <dt>E-mail Address</dt>
+            <dd><a href="mailto:@Model.EmailAddress">@Model.EmailAddress</a></dd>
+        </div>
+    </dl>
+    <div class="form-actions">
+        <a asp-action="Edit" asp-route-id="@Model.InstructorId" class="btn btn-primary">Edit record</a>
+        <a asp-action="Delete" asp-route-id="@Model.InstructorId" class="btn btn-outline-danger">Delete</a>
+    </div>
+</section>

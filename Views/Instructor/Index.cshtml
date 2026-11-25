@@ -1,0 +1,81 @@
+@model IEnumerable<Instructor>
+@{
+    ViewData["Title"] = "Instructors";
+}
+
+<div class="page-heading">
+    <div>
+        <h1>Instructor Records</h1>
+        <p class="muted-text">View, create, update, or remove instructor records sorted by department.</p>
+    </div>
+    <a asp-action="Create" class="btn btn-primary">+ Add instructor</a>
+</div>
+
+@if (TempData["SuccessMessage"] is string message)
+{
+    <div class="alert alert-success" role="alert">@message</div>
+}
+
+<div class="panel table-panel">
+    @if (!Model.Any())
+    {
+        <div class="empty-state">
+            <div class="empty-icon">▤</div>
+            <h2 class="h5">No instructor records yet</h2>
+            <p class="muted-text">Create the first record to begin using the instructor list.</p>
+            <a asp-action="Create" class="btn btn-primary">Add first instructor</a>
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>Instructor ID</th>
+                        <th>Full Name</th>
+                        <th>Department</th>
+                        <th>Age</th>
+                        <th>Bachelor's Degree</th>
+                        <th>Majorship</th>
+                        <th>Gender</th>
+                        <th>Address</th>
+                        <th>E-mail Address</th>
+                        <th class="actions-column">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach (var instructor in Model)
+                {
+                    <tr>
+                        <td class="text-secondary fw-semibold">#@instructor.InstructorId</td>
+                        <td>
+                            <strong class="text-dark">@instructor.FullName</strong>
+                        </td>
+                        <td>
+                            <span class="badge @(instructor.Department.Contains("ICS") ? "badge-ics" : "badge-ied")">
+                                @instructor.Department
+                            </span>
+                        </td>
+                        <td>@instructor.Age</td>
+                        <td>@instructor.BachelorDegree</td>
+                        <td>@instructor.Majorship</td>
+                        <td>@instructor.Gender</td>
+                        <td>@instructor.Address</td>
+                        <td>
+                            <a href="mailto:@instructor.EmailAddress">@instructor.EmailAddress</a>
+                        </td>
+                        <td>
+                            <div class="action-buttons">
+                                <a asp-action="Details" asp-route-id="@instructor.InstructorId" class="btn btn-sm btn-outline-secondary">Details</a>
+                                <a asp-action="Edit" asp-route-id="@instructor.InstructorId" class="btn btn-sm btn-outline-primary">Edit</a>
+                                <a asp-action="Delete" asp-route-id="@instructor.InstructorId" class="btn btn-sm btn-outline-danger">Delete</a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>

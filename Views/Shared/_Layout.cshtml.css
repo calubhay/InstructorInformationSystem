@@ -1,0 +1,31 @@
+a {
+  color: var(--primary, #7e192d);
+}
+
+.btn-primary {
+  color: #fff;
+  background-color: var(--primary, #7e192d);
+  border-color: var(--primary, #7e192d);
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-dark, #5c0f1e);
+  border-color: var(--primary-dark, #5c0f1e);
+}
+
+.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+  color: #fff;
+  background-color: var(--primary, #7e192d);
+  border-color: var(--primary, #7e192d);
+}
+
+.border-top {
+  border-top: 1px solid #ebdce0;
+}
+.border-bottom {
+  border-bottom: 1px solid #ebdce0;
+}
+
+.box-shadow {
+  box-shadow: 0 .25rem .75rem rgba(126, 25, 45, .05);
+}
